@@ -6,14 +6,10 @@ import FormInput from "../common/FormInput";
 import { profileValidation } from "../../validations";
 import { getApiCallHeaders } from "../../utils";
 import { API_URL, FAILED_TO_UPDATE_PROFILE, PROFILE_UPDATED } from "../../constants";
-import { Alert } from '../common/Alert'
 
-export const EditProfile = ({ profile }) => {
-  const [show, setShow] = useState(false)
-  const [alert, setAlert] = useState({
-    type: '',
-    message: ''
-  })
+
+export const EditProfile = ({ profile, refetch, show, setAlert, setShow }) => {
+
   const methods = useForm({
     resolver: yupResolver(profileValidation),
     defaultValues: profile
@@ -35,16 +31,16 @@ export const EditProfile = ({ profile }) => {
     }
 
     try {
-      const response = await axios.put(`${API_URL}/users/`, formData, {
+      await axios.put(`${API_URL}/users/`, formData, {
         headers: {
           ...getApiCallHeaders(),
           'Content-Type': 'multipart/form-data',
         }
       });
+
+      refetch()
+      setShow(true)
       setAlert({ message: PROFILE_UPDATED, type: 'success'})
-      setTimeout(() => {
-        window.location = '/profile'
-      }, 1000)
     } catch (error) {
       setAlert({ message: FAILED_TO_UPDATE_PROFILE, type: 'danger'})
       console.error('Error updating profile:', error);
@@ -52,16 +48,11 @@ export const EditProfile = ({ profile }) => {
   };
 
   useEffect(() => {
-    if (show) setTimeout(() => setShow(false), 1000)
-  }, [show])
-
-  useEffect(() => {
     reset(profile);
   }, [profile, reset]);
 
   return (
     <div className="tab-pane fade profile-edit pt-3" id="profile-edit">
-      {show && <Alert type={alert.type} message={alert.message} />}
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
           <div className="row mb-3">
