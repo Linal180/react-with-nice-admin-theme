@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Header } from './components/common/Header';
 import { Sidebar } from './components/Sidebar';
-import { Profile } from './pages/Profile';
-import { Login } from './pages/Login';
+import { Profile } from './pages/profile';
+import { Login } from './pages/login';
 import { TOKEN } from './constants';
 import { useEffect } from 'react';
 
