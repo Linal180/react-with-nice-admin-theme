@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { apiPost } from "../axios";
-import { validatePassword, validateUsername } from "../utils";
-import { INVALID_EMAIL_OR_PASSWORD, TOKEN } from "../constants";
+import { apiPost } from "../../axios";
+import { validatePassword, validateUsername } from "../../utils";
+import { INVALID_EMAIL_OR_PASSWORD, TOKEN } from "../../constants";
 
 export const LoginForm = () => {
   const [username, setUsername] = useState("");
