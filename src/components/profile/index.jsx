@@ -7,10 +7,16 @@ import { Overview } from "./Overview";
 import { Settings } from "./Settings";
 import { UpdatePassword } from "./UpdatePassword";
 import { Spinner } from "../common/Spinner";
+import { Alert } from '../common/Alert'
 
 export const ProfileComponent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [profile, setProfile] = useState({});
+  const [show, setShow] = useState(false)
+  const [alert, setAlert] = useState({
+    type: '',
+    message: ''
+  })
 
   const getUserProfile = useCallback(async () => {
     setIsLoading(true)
@@ -18,10 +24,17 @@ export const ProfileComponent = () => {
 
     if (response.status == 200) {
       setProfile(response.data)
+      const tabs = new window.bootstrap.Tab(document.getElementById('myTab'));
+
+      tabs.show('#profile-overview');
     }
 
     setIsLoading(false)
   }, [])
+
+  useEffect(() => {
+    if (show) setTimeout(() => setShow(false), 1000)
+  }, [show])
 
   useEffect(() => {
     getUserProfile()
@@ -51,13 +64,21 @@ export const ProfileComponent = () => {
               <div className="card-body pt-3">
                 <ProfileTabs />
 
+                {show && <Alert type={alert.type} message={alert.message} />}
+
                 {isLoading ?
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
                     <Spinner />
                   </div>
                   : <div className="tab-content pt-2">
                     <Overview profile={profile} />
-                    <EditProfile profile={profile} />
+                    <EditProfile
+                      setAlert={setAlert}
+                      show={show}
+                      setShow={setShow}
+                      profile={profile}
+                      refetch={() => getUserProfile()}
+                    />
                     <Settings />
                     <UpdatePassword />
                   </div>
